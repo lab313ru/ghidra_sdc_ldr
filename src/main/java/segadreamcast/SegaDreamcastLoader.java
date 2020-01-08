@@ -44,6 +44,7 @@ import ghidra.util.task.TaskMonitor;
 public class SegaDreamcastLoader extends AbstractLibrarySupportLoader {
 
 	private static final long DEF_RAM_BASE = 0x8C000000L;
+	private static final long RAM_SIZE = 0x02000000L;
 	private static final String OPTION_NAME = "RAM Base Address: ";
 	private static long ramBase = DEF_RAM_BASE;
 	
@@ -70,6 +71,9 @@ public class SegaDreamcastLoader extends AbstractLibrarySupportLoader {
 	protected void load(ByteProvider provider, LoadSpec loadSpec, List<Option> options, Program program, TaskMonitor monitor, MessageLog log) throws CancelledException, IOException {
 		FlatProgramAPI fpa = new FlatProgramAPI(program);
 		createSegments(fpa, log);
+		
+		InputStream ramStream = provider.getInputStream(0L);
+		createSegment(fpa, ramStream, "RAM", ramBase, RAM_SIZE, true, true, log);
 	}
 
 	@Override
